@@ -1,0 +1,17 @@
+{
+    "version": "1.0.0",
+    "name": "root/app",
+    "authors": [
+        {
+            "name": "Pascal Heidmann",
+            "email": "pascal@heidmann.io"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "."
+        }
+    }
+}
