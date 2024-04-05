@@ -1,0 +1,21 @@
+{
+    "version": "1.0.0",
+    "name": "experiment/reactive-php",
+    "autoload": {
+        "psr-4": {
+            "Experiments\\ReactivePhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pascal Heidmann",
+            "email": "pascal@heidmann.io"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10"
+    }
+}
