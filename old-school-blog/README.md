@@ -11,3 +11,8 @@ injection.
 composer update
 php -S localhost:8000 public/index.php
 ```
+
+OR use the `docker-compose.yml` file to run it with docker.
+```bash
+docker compose up -d
+```

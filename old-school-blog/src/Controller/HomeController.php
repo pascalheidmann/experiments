@@ -36,8 +36,6 @@ final class HomeController extends BaseController
             $content .= '<p><a href="/page/' . ($page + 1) . '">Next page</a></p>';
         }
 
-        $content .= '<a href="/post/new">+ Write new post</a>';
-
         return $content;
     }
 

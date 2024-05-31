@@ -6,7 +6,6 @@ RUN cd /app && \
 FROM cgr.dev/chainguard/php:latest
 COPY --from=builder /app /app
 
-
 WORKDIR /app
 EXPOSE 8000
 
