@@ -19,7 +19,8 @@ $config = [
         DocumentRepository::class => fn(ServiceContainer $container) => new DocumentRepository(
             $container->get(ConnectionInterface::class)
         ),
-        MyApp::class => fn(ServiceContainer $container) => new MyApp($container->get(DocumentRepository::class)),
+        //MyApp::class => fn(ServiceContainer $container) => new MyApp($container->get(DocumentRepository::class)),
+        MyApp::class => \App\AutowiringFactory::class
     ],
 ];
 
