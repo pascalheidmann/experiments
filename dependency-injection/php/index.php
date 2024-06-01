@@ -1,16 +1,18 @@
 <?php
 
+use App\AutowiringFactory;
 use App\Database\Connection;
 use App\Database\ConnectionInterface;
 use App\Database\DocumentRepository;
 use App\Kernel;
 use App\MyApp;
+use App\Resolver\AutoDiscoveryResolver;
+use App\Resolver\ConfigurableResolver;
 use App\ServiceContainer;
 
 include_once __DIR__ . '/vendor/autoload.php';
 
 $config = [
-    'services' => [],
     'alias' => [
         ConnectionInterface::class => Connection::class,
     ],
@@ -20,10 +22,16 @@ $config = [
             $container->get(ConnectionInterface::class)
         ),
         //MyApp::class => fn(ServiceContainer $container) => new MyApp($container->get(DocumentRepository::class)),
-        MyApp::class => \App\AutowiringFactory::class
+        //MyApp::class => AutowiringFactory::class
     ],
 ];
 
-$kernel = new Kernel();
-$kernel->configure($config);
+$kernel = new Kernel(
+    new ServiceContainer(
+        [
+            new ConfigurableResolver($config),
+            new AutoDiscoveryResolver(),
+        ],
+    )
+);
 $kernel->run(MyApp::class);

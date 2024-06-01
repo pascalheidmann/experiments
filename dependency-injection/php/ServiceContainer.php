@@ -2,61 +2,52 @@
 
 namespace App;
 
+use App\Resolver\ResolverInterface;
+
 class ServiceContainer
 {
-    private array $services = [];
-    private array $alias = [];
-    private array $factories = [];
+    /**
+     * @param array<int, ResolverInterface> $resolvers
+     * @param array<string, mixed> $services
+     */
+    public function __construct(
+        private array $resolvers = [],
+        private array $services = [],
+    )
+    {
+    }
 
     public function has(string $name): bool
     {
-        return isset($this->services[$name]) || isset($this->alias[$name]) || isset($this->factories[$name]);
-    }
-
-    public function set(string $name, mixed $service): void
-    {
-        $this->services[$name] = $service;
-    }
-
-    public function alias(string $name, string $alias): void
-    {
-        $this->alias[$name] = $alias;
-    }
-
-    public function setFactory(string $name, callable|string $factory): void
-    {
-        $this->factories[$name] = $factory;
+        return isset($this->services[$name]) || $this->canResolve($name);
     }
 
     public function get(string $name): mixed
     {
-        if (isset($this->alias[$name])) {
-            return $this->get($this->alias[$name]);
-        }
-
-        if (!isset($this->services[$name])) {
-            $this->set($name, $this->create($name));
-        }
-        return $this->services[$name];
+        return $this->services[$name] ?? $this->resolve($name);
     }
 
-    public function create(string $name): mixed
+    private function canResolve(string $name): bool
     {
-        $factory = $this->factories[$name] ?? null;
-
-        if (is_string($factory) && class_exists($factory)) {
-            $factory = new $factory();
+        foreach ($this->resolvers as $resolver) {
+            if ($resolver->canResolve($name)) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        if (is_callable($factory)) {
-            // shortcut to not recreate factory all the time
-            $this->factories[$name] = $factory;
-            return $factory($this, $name);
-        }
+    private function resolve(string $name): mixed
+    {
+        foreach ($this->resolvers as $resolver) {
+            $resolved = $resolver->resolve($name, $this);
 
-        if ($factory !== null) {
-            throw new \RuntimeException('Factory is not callable for service ' . $name);
+            if ($resolved) {
+                // cache it
+                $this->services[$name] = $resolved;
+                return $resolved;
+            }
         }
-        throw new \RuntimeException('Unknown service ' . $name);
+        throw new \RuntimeException("Service '$name' not found");
     }
 }
