@@ -9,11 +9,12 @@ use Experiments\Blog\Repository\PostRepository;
 final class HomeController extends BaseController
 {
     private const POSTS_PER_PAGE = 5;
-    private PostRepository $postRepository;
 
-    public function __construct()
+    public function __construct(
+        private PostRepository $postRepository,
+        private bool $cacheEnabled = false,
+    )
     {
-        $this->postRepository = new PostRepository();
     }
 
     public function __invoke(array $matches): string

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Experiments\Blog\Service;
 
-final readonly class ProductionBlogHeaderImageService
+final readonly class ProductionBlogHeaderImageService implements BlogHeaderImageService
 {
     public function getHeaderImage(): string
     {
